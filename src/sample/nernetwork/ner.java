@@ -1,13 +1,10 @@
 package sample.nernetwork;
 
 public class ner {
-    private double inputNer;
+    private double inputNer = 0;
     private double outputner;
-    private int numberOfLayer;
-
-    public int getNumberOfLayer() {
-        return numberOfLayer;
-    }
+    private int numberOfNer;
+    private double err;
 
     private double activateFunction(double enterNerValue){
 
@@ -15,23 +12,34 @@ public class ner {
 
     }
 
-    public void setNumberOfLayer(int numberOfLayer) {
-        this.numberOfLayer = numberOfLayer;
+    public void setNumberOfNer(int numberOfNer) {
+        this.numberOfNer = numberOfNer;
+    }
+    public int getNumberOfNer() {
+        return numberOfNer;
     }
 
     public double getInputNer() {
         return inputNer;
     }
 
-    private void setInputNer(double inputNer) {
+    public void setInputNer(double inputNer) {
         this.inputNer = inputNer;
     }
 
-    private double getOutputner() {
+    public double getOutputner() {
         return outputner;
     }
 
-    private void setOutputner(double outputner) {
-        this.outputner = outputner;
+    public void setOutputner() {
+        this.outputner = activateFunction(inputNer);
+    }
+
+    public double getErr() {
+        return err;
+    }
+
+    public void setErr(double err) {
+        this.err = err;
     }
 }

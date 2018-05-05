@@ -13,7 +13,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         mainWindow wind = new mainWindow(primaryStage);
-        Controller controll = new Controller();
+        Controller controll = new Controller(wind);
     }
 
 
