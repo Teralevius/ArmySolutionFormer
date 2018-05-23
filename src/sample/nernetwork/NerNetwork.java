@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Vector;
 
-public class ArtificialNeuralNetworks {
+public class NerNetwork {
+    private boolean lernnetwork = false;
     private Double neuralNetworkWeights[][];
     private ArrayList<Vector<Integer>> inputValues;
     private ArrayList<Integer> outputValues;
@@ -18,15 +19,80 @@ public class ArtificialNeuralNetworks {
     private static double maxDouble = 1;
     private double devideNumber=0;
     private double normLearning = 0.7;
+    private ArrayList<String> nameInputValues;
 
-    public ArtificialNeuralNetworks(){
+    public NerNetwork(){
         inputValues = new ArrayList<Vector<Integer>>();
         outputValues = new ArrayList<Integer>();
         allNers = new ArrayList<ner>();
         convertedInput = new ArrayList<Vector<Double>>();
         convertedOutput = new ArrayList<Double>();
+        nameInputValues = new ArrayList<String>();
 
     }
+
+    public Vector<Double> findAltern(ArrayList<Vector<Double>> input,ArrayList<Double> output, double coeff){
+        return findVectorResolution(convertedInput.get(findMinIndex(output,coeff)),convertedInput.get(findMaxIndex(output,coeff)),
+                convertedOutput.get(findMinIndex(output,coeff)),convertedOutput.get(findMaxIndex(output,coeff)),coeff);
+    }
+    public int findMinIndex(ArrayList<Double> output, double coeff){
+        double minNumber=0.0;
+        int index=-1;
+        for(int i=0;i<output.size();i++){
+            if(minNumber<output.get(i)&&output.get(i)<coeff){
+                index = i;
+                minNumber = output.get(i);
+            }
+        }
+        return index;
+    }
+
+    public int findMaxIndex(ArrayList<Double> output, double coeff){
+        double maxNumber=1.0;
+        int index = -1;
+        for (int i =0;i<output.size();i++){
+            if(maxNumber>output.get(i)&&output.get(i)>coeff){
+                index = i;
+                maxNumber = output.get(i);
+            }
+        }
+
+        return index;
+    }
+
+    public Vector<Double> findVectorResolution(Vector<Double> minVector, Vector<Double> maxVector,double minOutput,double maxOutput, double coeff){
+        double p = 0.0;
+        double minGran = minOutput;
+        double maxGran = maxOutput;
+        Vector<Double> minGranVector = minVector;
+        Vector<Double> maxGranVector = maxVector;
+        Vector<Double> resultVector = new Vector<Double>();
+        while ((p<coeff-0.0000001)||(p>coeff+0.0000001)){
+            p=(minGran+maxGran)/2;
+            resultVector = sech(minGranVector,maxGranVector);
+            if(p<coeff){
+                minGran = p;
+                minGranVector = resultVector;
+            }else{
+                if(p>coeff){
+                    maxGran = p;
+                    maxGranVector = resultVector;
+                }else {
+                     return resultVector;
+                }
+            }
+        }
+        return resultVector;
+    }
+
+    private Vector<Double> sech(Vector<Double> minVector, Vector<Double> maxVector){
+        Vector<Double> outputVector=new Vector<Double>();
+        for(int i=0;i<minVector.size();i++){
+            outputVector.add((minVector.get(i)+maxVector.get(i))/2);
+        }
+        return  outputVector;
+    }
+
     public double generateRandomDouble(){
         randDouble = new Random();
         return minDouble + (maxDouble - minDouble) * randDouble.nextDouble();
@@ -40,18 +106,15 @@ public class ArtificialNeuralNetworks {
 
         fillWeightMatrix(2*inputValues.get(0).size()+2);
         fillRandValues();
-        System.out.println(inputValues);
         convertNumbers();
-        System.out.println(convertedInput);
-        System.out.println(convertedOutput);
         //System.out.println(convertNumbers());
-        startLearningNetwork(convertedInput,convertedOutput,1000000);
-        for(int j = 0; j<2*inputValues.get(0).size()+2;j++){
+        //startLearningNetwork(convertedInput,convertedOutput,1000000);
+        /*for(int j = 0; j<2*inputValues.get(0).size()+2;j++){
             System.out.println("");
             for(int k=0;k<2*inputValues.get(0).size()+2;k++){
                 System.out.print(" "+neuralNetworkWeights[j][k]);
             }
-        }
+        }*/
         //System.out.println(inputValues.get(0).size()+outputValues.get(0).size()+allNers.size());
 
         //fillWeightMatrix();
@@ -90,11 +153,9 @@ public class ArtificialNeuralNetworks {
         }
         return devideNumber;
     }
-    private void startLearningNetwork(ArrayList<Vector<Double>> input,ArrayList<Double> convetedOutput,int iteration){
-        for(int i=0;i<iteration;i++){
-            for(int j=0;j<input.size();j++){
-                calcNerNetwork(input.get(j),convetedOutput.get(j));
-            }
+    public void startLearningNetwork(ArrayList<Vector<Double>> input,ArrayList<Double> convetedOutput){
+        for(int j=0;j<input.size();j++){
+            calcNerNetwork(input.get(j),convetedOutput.get(j));
         }
     }
     private void calcNerNetwork(Vector<Double>input, double output){
@@ -225,5 +286,43 @@ public class ArtificialNeuralNetworks {
         this.neuralNetworkWeights = neuralNetworkWeights;
     }
 
+    public ArrayList<Vector<Double>> getConvertedInput() {
+        return convertedInput;
+    }
 
+    public void setConvertedInput(ArrayList<Vector<Double>> convertedInput) {
+        this.convertedInput = convertedInput;
+    }
+
+    public ArrayList<Double> getConvertedOutput() {
+        return convertedOutput;
+    }
+
+    public void setConvertedOutput(ArrayList<Double> convertedOutput) {
+        this.convertedOutput = convertedOutput;
+    }
+
+    public double getDevideNumber() {
+        return devideNumber;
+    }
+
+    public void setDevideNumber(double devideNumber) {
+        this.devideNumber = devideNumber;
+    }
+
+    public ArrayList<String> getNameInputValues() {
+        return nameInputValues;
+    }
+
+    public void setNameInputValues(ArrayList<String> nameInputValues) {
+        this.nameInputValues = nameInputValues;
+    }
+
+    public boolean isLernnetwork() {
+        return lernnetwork;
+    }
+
+    public void setLernnetwork(boolean lernnetwork) {
+        this.lernnetwork = lernnetwork;
+    }
 }
